@@ -3,10 +3,13 @@ const dotenv = require('dotenv').config();
 const router = require('./routes/router');
 const port = process.env.PORT || 5001;
 const cors =require('cors')
-const connectDb = require('./dbconfig/dbconnection');
+const CreateDb = require('./dbconfig/dbCreation');
+const createTable=require('./dbconfig/createTable')
 const errorHandler = require('./middlewares/errorHandler'); // Import the errorHandler before using it.
 const app = express();
-connectDb();
+CreateDb();
+createTable();
+
 app.use(cors())
 app.use(express.json());
 

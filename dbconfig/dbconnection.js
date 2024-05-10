@@ -1,13 +1,14 @@
-const mongoose = require('mongoose');
+const { Sequelize } = require('sequelize');
 
-const connectDb = async () => {
-    try {
-        const connect = await mongoose.connect(process.env.CONNECTION_STRING);
-        console.log("Database connected:", connect.connection.host, connect.connection.name);
-    } catch (error) {
-        console.error("Error connecting to database:", error);
-        process.exit(1);
-    }
-}
+const sequelize = new Sequelize({
+    host: process.env.HOST,
+    dialect: process.env.DIALECT,
+    username: process.env.USERNAME,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE_NAME, // Specify the database name
+    logging: false // Disable logging of SQL queries (optional)
+});
 
-module.exports = connectDb;
+module.exports = sequelize;
+
+
