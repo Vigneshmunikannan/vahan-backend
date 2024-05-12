@@ -5,7 +5,6 @@ const errorHandler = (err, req, res, next) => {
     switch (statuscode) {
         case constants.VALIDATION_ERROR:
             res.json({ title: "Validation failed", message: err.message, stackTrace: err.stack });
-            console.log('im 400')
             break;
         case constants.NOT_FOUND:
             res.json({ title: "Not Found", message: err.message, stackTrace: err.stack });
@@ -23,10 +22,10 @@ const errorHandler = (err, req, res, next) => {
             res.json({ message: err.message, stackTrace: err.stack });
             break;
         case constants.nomodification:
-            console.log("no modification")
             res.json({message: err.message, stackTrace: err.stack})
             break;
         default:
+            console.log(err.message)
             res.json({ title: "undefined error in middleware", message: err.message, stackTrace: err.stack });
             break;
     }

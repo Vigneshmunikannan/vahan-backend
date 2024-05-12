@@ -1,9 +1,14 @@
 const express = require('express')
 const router = express.Router()
+const validateToken=require('../middlewares/validatetoken')
 const {
-   check
-} = require("../controllers/controllers")
+   login,logout,register
+} = require("../controllers/authControllers")
 
-router.route('/check').get(check)
+router.route('/register').post(register);
+router.route('/login').post(login);
+router.route('/logout').post(validateToken,logout);
+
+
 
 module.exports = router
