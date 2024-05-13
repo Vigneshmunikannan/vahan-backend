@@ -7,6 +7,11 @@ const defineUserDetailsModel = (sequelize, User) => {
             primaryKey: true,
             autoIncrement: true
         },
+        rollnumber: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            unique: false
+        },
         username: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -28,6 +33,10 @@ const defineUserDetailsModel = (sequelize, User) => {
             allowNull: false
         },
         lastname: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        firstname: {
             type: DataTypes.STRING,
             allowNull: false
         },

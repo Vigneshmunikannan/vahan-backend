@@ -6,7 +6,7 @@ const validateToken = asynchandler(async (req, res, next) => {
     //splitting token from request
     let authHeader = req.headers.Authorization || req.headers.authorization;
     if (!authHeader) {
-        res.status(401).json({ msg: "User token is missing" });
+        res.status(401)
         throw new Error("User token is missing")
     }
     if (authHeader && authHeader.startsWith("Bearer")) {
@@ -15,12 +15,12 @@ const validateToken = asynchandler(async (req, res, next) => {
         if (isTokenBlacklisted(token)) {
             console.log("inside invalid token")
             res.status(401)
-            throw new Error("User is not authorized1");
+            throw new Error("User is not authorized");
         }
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
             if (err) {
                 res.status(401);
-                throw new Error("User is not authorized2");
+                throw new Error("User is not authorized");
             }
             req.user = decoded.user;
             next()

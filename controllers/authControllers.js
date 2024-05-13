@@ -54,8 +54,6 @@ const register = asynchandler(async (req, res) => {
 
 const login = asynchandler(async (req, res) => {
   const { username, password } = req.body;
-
-  try {
       // Check if username and password are provided
       if (!username || !password) {
           res.status(400);
@@ -87,12 +85,6 @@ const login = asynchandler(async (req, res) => {
       } else {
           res.status(401).json({ message: 'Invalid username or password' });
       }
-
-  } catch (error) {
-      // Handle errors
-      console.error('Error logging in:', error.message);
-      res.status(500).json({ error: error.message });
-  }
 })
 
 const logout = asynchandler(async (req, res) => {
