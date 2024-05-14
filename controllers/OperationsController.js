@@ -99,9 +99,9 @@ const addstudent = asynchandler(
             const dobDate = new Date(dob);
         
             // Check if the parsed date is a valid date and year is greater than 1900
-            if (isNaN(dobDate.getTime()) || dobDate.getFullYear() <= 1900) {
-                return false;
-            }
+            // if (isNaN(dobDate.getTime()) || dobDate.getFullYear() <= 1900) {
+            //     return false;
+            // }
         
             // Get the current date
             const currentDate = new Date();
@@ -111,14 +111,25 @@ const addstudent = asynchandler(
                 return false;
             }
         
+            // Calculate the age
+            const ageDiff = currentDate - dobDate;
+            const ageDate = new Date(ageDiff);
+            const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+        
+            // Check if age is at least 15 years
+            if (age < 15) {
+                return false;
+            }
+        
             return true;
-        };        
+        };
+                
 
         if (!isValidDOB(DOB)) {
             res.status(400);
-            throw new Error('Invaild DOB');
+            throw new Error('Invaild DOB or Age should above 15 years');
         }
-
+        
         const isValidMobileNumber = (value) => {
             // Check if value is a string
             if (typeof value !== 'string') {
@@ -154,11 +165,17 @@ const addstudent = asynchandler(
             throw new Error('Invalid Mobile Number');
         }
 
+
         const isValidYear = (value) => value >= 1 && value <= 4;
         if (!isValidYear(parseInt(year))) {
             res.status(400);
             throw new Error('Year should be between 1 and 4');
         }
+        if(firstname===lastname){
+            res.status(400);
+            throw new Error('FirstName and Last name should not be same');
+        }
+
         const existingStudent = await UserDetails.findOne({ where: { rollnumber, username } });
         if (existingStudent) {
             res.status(409);
@@ -239,7 +256,9 @@ const updatestudent = asynchandler(async (req, res) => {
         year,
         mobileNumber,
         college,
-        DOB
+        DOB,
+        firstname,
+        lastname
     } = req.body;
 
     // Check if student exists
@@ -351,6 +370,39 @@ const updatestudent = asynchandler(async (req, res) => {
         res.status(400)
         throw new Error(`No changes in college`);
     }
+
+    if (firstname !== undefined && firstname !== student.firstname) {
+        if(firstname===''){
+            res.status(400);
+            throw new Error('Empty FirstName');
+        }
+        if (!containsOnlyLetters(firstname)) {
+            res.status(400);
+            throw new Error('Invaild FirstName');
+        }
+        updatedFields.firstname = firstname;
+    }
+    else if (firstname !== undefined) {
+        res.status(400)
+        throw new Error(`No changes in FirstName`);
+    }
+    if (lastname !== undefined && lastname !== student.lastname) {
+        if(lastname===''){
+            res.status(400);
+            throw new Error('Empty LastName');
+        }
+        if (!containsOnlyLetters(firstname)) {
+            res.status(400);
+            throw new Error('Invaild LastName');
+        }
+        updatedFields.lastname = lastname;
+    }
+    else if (lastname !== undefined) {
+        res.status(400)
+        throw new Error(`No changes in LastName`);
+    }
+
+
     if (DOB !== undefined && DOB !== student.DOB) {
         const isValidDOB = (dob) => {
             // Check if dob is provided and is a string
@@ -380,12 +432,23 @@ const updatestudent = asynchandler(async (req, res) => {
                 return false;
             }
         
+            // Calculate the age
+            const ageDiff = currentDate - dobDate;
+            const ageDate = new Date(ageDiff);
+            const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+        
+            // Check if age is at least 15 years
+            if (age < 15) {
+                return false;
+            }
+        
             return true;
-        };        
+        };
+                
 
         if (!isValidDOB(DOB)) {
             res.status(400);
-            throw new Error('Invaild DOB');
+            throw new Error('Invaild DOB or Age should above 15 years');
         }
         updatedFields.DOB = DOB;
     }
@@ -393,6 +456,13 @@ const updatestudent = asynchandler(async (req, res) => {
         res.status(400)
         throw new Error(`No changes in DOB`);
     }
+
+     if(firstname !== undefined && lastname !== undefined){
+        if(firstname===lastname){
+            res.status(400);
+            throw new Error('FirstName and Last name should not be same');
+        }4
+     }
     
     await UserDetails.update(updatedFields, { where: { id } });
 
